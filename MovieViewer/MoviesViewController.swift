@@ -72,9 +72,15 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let movie = movies![indexPath.row]
         let title = movie["title"] as! String
         let overview = movie["overview"] as! String
-        let posterView = movie["poster_path"] as! String
+        
         let baseURL = "http://image.tmdb.org/t/p/w500"
+       
+        if let posterView = movie["poster_path"] as? String
+        {
         let imageURL = NSURL (string: baseURL + posterView)
+        cell.posterView.setImageWithURL(imageURL!)
+        }
+        
         let rating = movie["vote_average"] as! NSNumber;
         let voteAverage = movie["vote_average"] as! NSNumber;
         let popularity = movie["popularity"] as! NSNumber;
@@ -82,7 +88,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
-        cell.posterView.setImageWithURL(imageURL!)
         cell.ratingLabel.text = voteString[voteString.startIndex..<voteString.startIndex.advancedBy(3)];
         
         var color = UIColor(red: 0.27, green: 0.62, blue: 0.27, alpha: 1);
@@ -136,14 +141,22 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         searchBar.resignFirstResponder()
     }
     
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPathForCell(cell)
+        let movie = movies! [indexPath!.row]
+        
+        let detailViewController = segue.destinationViewController as! DetailViewController
+        detailViewController.movie = movie
+        
+        print("prepare for segue called")
+        
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
-    */
 
 }

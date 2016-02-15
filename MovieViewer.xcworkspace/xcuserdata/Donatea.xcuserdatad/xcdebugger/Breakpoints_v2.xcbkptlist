@@ -23,8 +23,8 @@
                   symbolName = "MovieViewer.MoviesViewController.init (MovieViewer.MoviesViewController.Type)(nibName : Swift.Optional&lt;Swift.String&gt;, bundle : Swift.Optional&lt;__ObjC.NSBundle&gt;) -&gt; MovieViewer.MoviesViewController"
                   moduleName = "MovieViewer"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Donatea/Downloads/Project-One---CodePath-master/MovieViewer/MoviesViewController.swift"
-                  timestampString = "477190508.803184"
+                  urlString = "file:///Users/Donatea/Documents/Project-One---CodePath-master/MovieViewer/MoviesViewController.swift"
+                  timestampString = "477199525.880535"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -38,15 +38,47 @@
                   symbolName = "MovieViewer.MoviesViewController.init (MovieViewer.MoviesViewController.Type)(coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;MovieViewer.MoviesViewController&gt;"
                   moduleName = "MovieViewer"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Donatea/Downloads/Project-One---CodePath-master/MovieViewer/MoviesViewController.swift"
-                  timestampString = "477190508.80367"
+                  urlString = "file:///Users/Donatea/Documents/Project-One---CodePath-master/MovieViewer/MoviesViewController.swift"
+                  timestampString = "477199525.880903"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
                   endingLineNumber = "0"
-                  offsetFromSymbolStart = "16">
+                  offsetFromSymbolStart = "19">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MovieViewer/DetailViewController.swift"
+            timestampString = "477198775.695744"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
+            landmarkName = "DetailViewController"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MovieViewer/MoviesViewController.swift"
+            timestampString = "477200695.18278"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "tableView(_:cellForRowAtIndexPath:)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
