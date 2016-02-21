@@ -1,4 +1,4 @@
-# Project 2 - *Flicks*
+# Project 2 Homework- *Flicks*
 
 **Flicks** is a movies app displaying box office and top rental DVDs using [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
