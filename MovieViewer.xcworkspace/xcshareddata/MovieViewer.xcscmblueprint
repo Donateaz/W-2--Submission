@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "41970A288ED4C1B44D440B058432E179C7AA39C7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "41BB016E9DD6EFD3BDC62E347BB0CD529DEA22FB" : 0,
+    "41970A288ED4C1B44D440B058432E179C7AA39C7" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C06172FF-7E4C-4502-BACD-46844A4E50C7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "41BB016E9DD6EFD3BDC62E347BB0CD529DEA22FB" : "Project-One---CodePath-master\/MovieViewer\/",
+    "41970A288ED4C1B44D440B058432E179C7AA39C7" : "Project-One---CodePath-master\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MovieViewer",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MovieViewer.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:Donateaz\/Homework-2.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "41970A288ED4C1B44D440B058432E179C7AA39C7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:Donateaz\/Project-One-CodePath.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "41BB016E9DD6EFD3BDC62E347BB0CD529DEA22FB"
+    }
+  ]
+}

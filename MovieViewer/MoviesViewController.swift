@@ -8,77 +8,106 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+   
     @IBOutlet weak var tableView: UITableView!
-    
-    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var networkErrorView: UIImageView!
     
     var movies: [NSDictionary]?
-    var filteredMovies : [NSDictionary]?
+    var filterMovies : [NSDictionary]?
+    var refreshControl: UIRefreshControl!
+    var endpoint: String!
+
+    //search bar display
+    var searchController = UISearchController(searchResultsController: nil)
+
+    
+   //search bar
+    @IBAction func resultsButton(sender: AnyObject) {
+       
+        self.presentViewController(searchController, animated: true, completion: nil)
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //error
+        view.addSubview(networkErrorView)
+        
+        //search bar
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.dimsBackgroundDuringPresentation = false
+        //searchController.searchBar.backgroundColor = [UIColor: Black]
+        searchController.searchResultsUpdater = self
         
         tableView.dataSource = self
         tableView.delegate = self
         
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
-        let request = NSURLRequest(
-            URL: url!)
+        // refresh Controller
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "didRefresh", forControlEvents:
+            .ValueChanged)
+        tableView.insertSubview(refreshControl, atIndex: 0)
         
-        let session = NSURLSession(
-            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-            delegate: nil,
-            delegateQueue: NSOperationQueue.mainQueue()
-        )
-        
-        let task: NSURLSessionDataTask = session.dataTaskWithRequest(request,
-            completionHandler: { (dataOrNil, response, error) in
-                if let data = dataOrNil {
-                    if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
-                        data, options:[]) as? NSDictionary {
-                            print("response: \(responseDictionary)")
-                            
-                          self.movies = responseDictionary["results"] as? [NSDictionary]
-                          self.tableView.reloadData()
-                    }
-                }
-        });
-        task.resume()
-    
-    
+        networkRequest()
     }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        
+        //search bar display
+        if searchController.active && searchController.searchBar.text != "" {
+            return filterMovies!.count
+        }
         if let movies = movies {
             return movies.count
         } else {
             return 0
         }
+        
+    }
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        //table view function that runs when an item is selected
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        print("item selected")
+        print(indexPath)
+        
+        
+    }
     
+    func filterContentForSearchText(searchText: String, scope: String = "all") {
+        //filter data for search bar display
+        filterMovies = movies!.filter { mov in return mov["title"]!.lowercaseString.containsString(searchText.lowercaseString)
+        }
+        
+        tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         
-        let movie = movies![indexPath.row]
+        var movie = movies![indexPath.row]
+        
+        if searchController.active && searchController.searchBar.text != "" {
+            movie = filterMovies![indexPath.row]
+        }
         let title = movie["title"] as! String
         let overview = movie["overview"] as! String
         
         let baseURL = "http://image.tmdb.org/t/p/w500"
-       
+        
         if let posterView = movie["poster_path"] as? String
         {
-        let imageURL = NSURL (string: baseURL + posterView)
-        cell.posterView.setImageWithURL(imageURL!)
+            let imageURL = NSURL (string: baseURL + posterView)
+            cell.posterView.setImageWithURL(imageURL!)
         }
         
         let rating = movie["vote_average"] as! NSNumber;
@@ -103,60 +132,96 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.ratingLabel.layer.backgroundColor = color.CGColor;
         cell.ratingLabel.layer.cornerRadius = 5;
-
-           print("row\(indexPath.row)")
+        
+        print("row\(indexPath.row)")
         return cell
-    }
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        if (searchText.isEmpty) {
-            filteredMovies = movies
-        } else {
-            filteredMovies = movies?.filter({(dataItem : NSDictionary) -> Bool in
-                let title = dataItem["title"] as! String
-                if title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
-                    return true
-                } else {
-                    return false
-                }
-            })
-        }
-        
-        tableView.reloadData()
-    }
-    
-    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
-        self.searchBar.showsCancelButton = true
-    }
-    
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-        searchBar.showsCancelButton = false
-        searchBar.text = ""
-        filteredMovies = movies
-        searchBar.resignFirstResponder()
-        tableView.reloadData()
-    }
-    
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-        searchBar.showsCancelButton = false
-        searchBar.resignFirstResponder()
-    }
-    
-    
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let cell = sender as! UITableViewCell
-        let indexPath = tableView.indexPathForCell(cell)
-        let movie = movies! [indexPath!.row]
+            }
+    
+    func networkRequest() {
+        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+        let url = NSURL(string: "https://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
+        let request = NSURLRequest(
+            URL: url!)
         
+        let session = NSURLSession(
+            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+            delegate: nil,
+            delegateQueue: NSOperationQueue.mainQueue()
+        )
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        
+        let task: NSURLSessionDataTask = session.dataTaskWithRequest(request,
+            completionHandler: { (dataOrNil, response, error) in
+                if let data = dataOrNil {
+                    if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
+                        data, options:[]) as? NSDictionary {
+                            
+                            print(responseDictionary)
+                            self.movies = responseDictionary["results"] as? [NSDictionary]
+                            self.tableView.reloadData()
+                            MBProgressHUD.hideHUDForView(self.view, animated: true)
+                            self.refreshControl.endRefreshing()
+                            self.networkErrorView.hidden = true
+                    }
+                } else {
+                    self.tableView.hidden = true
+                    self.networkErrorView.hidden = false
+                    self.view.bringSubviewToFront(self.networkErrorView)
+                    
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    self.refreshControl.endRefreshing()
+                    UIView.animateWithDuration(1.5, delay: 0.2, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+                        self.networkErrorView.alpha = 1.0
+                        }, completion: {
+                            (finished: Bool) -> Void in
+                            UIView.animateWithDuration(1.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                                self.networkErrorView.alpha = 0.0
+                                }, completion: nil)
+                    })
+                    
+                    self.tableView.hidden = false
+                    print("Network error")
+                }
+        });
+        task.resume()
+        
+    }
+   
+    func didRefresh() {
+        networkRequest()
+    }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPathForCell(cell)
+        
+        var movie = movies![indexPath!.row]
+        if searchController.active {
+            movie = filterMovies![indexPath!.row]
+        }
+        // where the segue is going
+        // casted as DetailViewController to make specific reference to custom class
+        // allows us to access movie property of type NSDictionary
         let detailViewController = segue.destinationViewController as! DetailViewController
+        
+        searchController.active = false
+        
+        // passing data from current movie variable to one in DetailViewController
         detailViewController.movie = movie
         
         print("prepare for segue called")
-        
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
-
+    
+    
 }
+
+extension MoviesViewController: UISearchResultsUpdating {
+    func updateSearchResultsForSearchController(searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
+    }
+}
+
+// MARK: - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
